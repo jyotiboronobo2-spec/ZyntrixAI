@@ -34,7 +34,11 @@
 <body>
 
 <h1>ZyntrixAI Earn 💸</h1>
-<p>Watch ads & earn money</p>
+<div class="card">
+  <h3>📤 Share & Earn</h3>
+  <button onclick="shareApp()">Share App</button>
+</div>
+  <p>Watch ads & earn money</p>
 
 <h2>Balance: ₹ <span id="balance">0</span></h2>
 
@@ -128,7 +132,44 @@ function withdraw() {
 
 <!-- 🔥 YAHAN FIREBASE CODE PASTE -->
 <script type="module">
-  // firebase wala code
+
+// 🔥 Firebase imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+// 🔥 Firebase config
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  databaseURL: "YOUR_DB",
+  projectId: "YOUR_PROJECT"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let user = "user1";
+
+// 🔥 Share function (STEP 2 YE HAI 👇)
+window.shareApp = function() {
+  let link = window.location.href;
+
+  let text = "🔥 Earn money from this app!\nDownload now:\n" + link;
+
+  if (navigator.share) {
+    navigator.share({
+      title: "ZyntrixAI Earn",
+      text: text,
+      url: link
+    });
+  } else {
+    navigator.clipboard.writeText(link);
+    alert("Link copied! Share with friends");
+  }
+};
+
+// (baaki tera code niche rahega)
+
 </script>
 
 </body>
