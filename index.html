@@ -1,87 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZyntrixAI</title>
-  <style>
-    body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(-45deg, #0f172a, #1e3a8a, #3b82f6, #9333ea);
-  background-size: 400% 400%;
-  animation: gradientBG 10s ease infinite;
+<title>ZyntrixAI Earn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
   color: white;
+  text-align: center;
 }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.card {
+  background: #020617;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
 }
-  </style>
+
+button {
+  padding: 10px 20px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+</style>
 </head>
+
 <body>
 
-<header>ZyntrixAI</header>
+<h1>ZyntrixAI Earn 💸</h1>
+<p>Watch ads & earn money</p>
 
-<section class="hero">
-  <h1>Powerful AI Tools in One Place</h1>
-  <p>Generate content, solve problems, and boost productivity</p>
-</section>
-
-<section class="tools">
 <div class="card">
-  <h3>Text Generator</h3>
-
-<!-- 👉 YEH ADD KARO -->
-<select id="aiSelect" style="margin-bottom:10px;padding:8px;">
-  <option value="gpt">ChatGPT</option>
-  <option value="gemini">Gemini</option>
-</select>
-
-<textarea id="inputText" placeholder="Enter your idea..."></textarea>
-  <button onclick="generateText()">Generate</button>
-
-  <p id="outputText" style="margin-top:10px;color:#94a3b8;"></p>
+  <h3>💰 Your Balance: ₹ <span id="balance">0</span></h3>
 </div>
-  <div class="card">
-    <h3>Code Helper</h3>
-    <button onclick="alert('Coming Soon')">Use Tool</button>
-  </div>
-</section>
- <script>
-async function generateText() {
-  let input = document.getElementById("inputText").value;
-  let output = document.getElementById("outputText");
 
-  // 👇 YAHAN LAGAO
-  let ai = document.getElementById("aiSelect").value;
+<div class="card">
+  <h3>🎥 Watch Ad & Earn</h3>
+  <button onclick="watchAd()">Watch Ad</button>
+</div>
 
-  output.innerText = "Generating...";
+<div class="card">
+  <h3>📲 Install App & Earn</h3>
+  <button onclick="openOffer()">Install Now</button>
+</div>
 
-  try {
-    let url = "";
+<div class="card">
+  <h3>💳 Withdraw</h3>
+  <button onclick="withdraw()">Withdraw</button>
+</div>
 
-    if (ai === "gpt") {
-  url = "https://api.popcat.xyz/chatbot?msg=" + encodeURIComponent(input);
-} else if (ai === "gemini") {
-  url = "https://api.popcat.xyz/chatbot?msg=" + encodeURIComponent(input);
+<script>
+let balance = 0;
+
+// AD EARNING
+function watchAd() {
+  alert("Ad playing...");
+
+  setTimeout(() => {
+    let total = 10;
+    let userEarn = total * 0.4; // 40%
+    balance += userEarn;
+
+    document.getElementById("balance").innerText = balance;
+
+    alert("You earned ₹" + userEarn);
+  }, 3000);
 }
 
-    let res = await fetch(url);
-    let data = await res.json();
+// OFFERWALL
+function openOffer() {
+  window.open("https://your-offerwall-link.com");
+}
 
-    if (ai === "gpt") {
-      output.innerText = data.response;
-    } else {
-      output.innerText = data.response;
-    }
-
-  } catch (e) {
-    output.innerText = "Error, try again!";
+// WITHDRAW
+function withdraw() {
+  if (balance < 50) {
+    alert("Minimum ₹50 required");
+  } else {
+    alert("Withdrawal requested!");
+    balance = 0;
+    document.getElementById("balance").innerText = balance;
   }
 }
 </script>
+
 </body>
 </html>
