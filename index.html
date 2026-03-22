@@ -2,20 +2,23 @@
 <html>
 <head>
   <title>ZyntrixAI Earn</title>
+
   <style>
     body {
       font-family: Arial;
-      background: linear-gradient(135deg,#1e3c72,#2a5298);
+      background: #121212;
       color: white;
       text-align: center;
       padding: 20px;
     }
+
     .card {
-      background: #00000050;
+      background: #1e1e1e;
       padding: 15px;
       margin: 15px;
       border-radius: 10px;
     }
+
     button {
       padding: 10px 20px;
       background: #3b82f6;
@@ -23,6 +26,7 @@
       border: none;
       border-radius: 5px;
     }
+
     input {
       padding: 10px;
       width: 80%;
@@ -34,64 +38,61 @@
 <body>
 
 <h1>ZyntrixAI Earn 💸</h1>
+
+<!-- Balance -->
+<h2>Balance: ₹ <span id="balance">0</span></h2>
+
+<!-- Share -->
 <div class="card">
   <h3>📤 Share & Earn</h3>
   <button onclick="shareApp()">Share App</button>
 </div>
-  <p>Watch ads & earn money</p>
 
-<h2>Balance: ₹ <span id="balance">0</span></h2>
-
+<!-- Watch Ad -->
 <div class="card">
   <h3>🎥 Watch Ad</h3>
   <button onclick="watchAd()">Watch & Earn ₹4</button>
 </div>
 
+<!-- Withdraw -->
 <div class="card">
   <h3>💳 Withdraw</h3>
   <input type="text" id="upi" placeholder="Enter UPI ID">
   <button onclick="withdraw()">Withdraw</button>
 </div>
 
-<!-- 🔥 Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
-
 <script>
-const firebaseConfig = {
-  apiKey: "PASTE_YOUR_KEY",
-  authDomain: "PASTE",
-  databaseURL: "PASTE",
-  projectId: "PASTE"
+let balance = 0;
+
+// Load saved balance
+window.onload = function() {
+  let saved = localStorage.getItem("balance");
+  if (saved) balance = parseFloat(saved);
+
+  document.getElementById("balance").innerText = balance;
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-let user = "user1"; // simple user
-
-// Load balance
-db.ref("users/" + user).on("value", snap => {
-  let bal = snap.val()?.balance || 0;
-  document.getElementById("balance").innerText = bal;
-});
-
-// Watch ad (demo)
+// Watch ad
 function watchAd() {
   alert("Ad playing...");
-  
+
   setTimeout(() => {
-    db.ref("users/" + user).once("value", snap => {
-      let bal = snap.val()?.balance || 0;
-      bal += 4;
+    balance += 4;
+    localStorage.setItem("balance", balance);
 
-      db.ref("users/" + user).set({
-        balance: bal
-      });
-    });
+    document.getElementById("balance").innerText = balance;
 
-    alert("₹4 added");
-  }, 3000);
+    alert("₹4 added!");
+  }, 2000);
+}
+
+// Share app
+function shareApp() {
+  let text = "🔥 Earn money using this app!\n" + window.location.href;
+
+  let url = "https://wa.me/?text=" + encodeURIComponent(text);
+
+  window.open(url, "_blank");
 }
 
 // Withdraw
@@ -103,73 +104,18 @@ function withdraw() {
     return;
   }
 
-  db.ref("users/" + user).once("value", snap => {
-    let bal = snap.val()?.balance || 0;
-
-    if (bal < 50) {
-      alert("Minimum ₹50 required");
-      return;
-    }
-
-    db.ref("withdrawRequests").push({
-      user: user,
-      amount: bal,
-      upi: upi,
-      status: "pending"
-    });
-
-    db.ref("users/" + user).set({
-      balance: 0
-    });
-
-    alert("Withdrawal requested");
-  });
-}
-</script>
-<script>
-// tera purana code
-</script>
-
-<!-- 🔥 YAHAN FIREBASE CODE PASTE -->
-<script type="module">
-
-// 🔥 Firebase imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-
-// 🔥 Firebase config
-const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  databaseURL: "YOUR_DB",
-  projectId: "YOUR_PROJECT"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-let user = "user1";
-
-// 🔥 Share function (STEP 2 YE HAI 👇)
-window.shareApp = function() {
-  let link = window.location.href;
-
-  let text = "🔥 Earn money from this app!\nDownload now:\n" + link;
-
-  if (navigator.share) {
-    navigator.share({
-      title: "ZyntrixAI Earn",
-      text: text,
-      url: link
-    });
-  } else {
-    navigator.clipboard.writeText(link);
-    alert("Link copied! Share with friends");
+  if (balance < 50) {
+    alert("Minimum ₹50 required");
+    return;
   }
-};
 
-// (baaki tera code niche rahega)
+  alert("Withdrawal request submitted");
 
+  balance = 0;
+  localStorage.setItem("balance", balance);
+
+  document.getElementById("balance").innerText = balance;
+}
 </script>
 
 </body>
