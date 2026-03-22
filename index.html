@@ -63,7 +63,13 @@
 <div class="card">
   <h3>Text Generator</h3>
 
-  <textarea id="inputText" placeholder="Enter your idea..." style="width:100%;padding:10px;margin-top:10px;"></textarea>
+<!-- 👉 YEH ADD KARO -->
+<select id="aiSelect" style="margin-bottom:10px;padding:8px;">
+  <option value="gpt">ChatGPT</option>
+  <option value="gemini">Gemini</option>
+</select>
+
+<textarea id="inputText" placeholder="Enter your idea..."></textarea>
   <button onclick="generateText()">Generate</button>
 
   <p id="outputText" style="margin-top:10px;color:#94a3b8;"></p>
@@ -78,12 +84,29 @@ async function generateText() {
   let input = document.getElementById("inputText").value;
   let output = document.getElementById("outputText");
 
+  // 👇 YAHAN LAGAO
+  let ai = document.getElementById("aiSelect").value;
+
   output.innerText = "Generating...";
 
   try {
-    let res = await fetch("https://api.simsimi.net/v2/?text=" + encodeURIComponent(input));
+    let url = "";
+
+    if (ai === "gpt") {
+  url = "https://api.popcat.xyz/chatbot?msg=" + encodeURIComponent(input);
+} else if (ai === "gemini") {
+  url = "https://api.popcat.xyz/chatbot?msg=" + encodeURIComponent(input);
+}
+
+    let res = await fetch(url);
     let data = await res.json();
-    output.innerText = data.success;
+
+    if (ai === "gpt") {
+      output.innerText = data.response;
+    } else {
+      output.innerText = data.response;
+    }
+
   } catch (e) {
     output.innerText = "Error, try again!";
   }
