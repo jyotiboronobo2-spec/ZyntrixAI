@@ -62,55 +62,64 @@ button {
 <script>
 let balance = 0;
 
-// AD EARNING
+// Load data
+window.onload = function () {
+  let savedBalance = localStorage.getItem("balance");
+  let lastWithdraw = localStorage.getItem("lastWithdraw");
+
+  if (savedBalance) balance = parseFloat(savedBalance);
+
+  document.getElementById("balance").innerText = balance;
+  document.getElementById("lastWithdraw").innerText = lastWithdraw || 0;
+};
+
+// Watch Ad
 function watchAd() {
   alert("Ad playing...");
 
   setTimeout(() => {
     let total = 10;
-    let userEarn = total * 0.4; // 40%
+    let userEarn = total * 0.4;
+
     balance += userEarn;
+
+    localStorage.setItem("balance", balance);
 
     document.getElementById("balance").innerText = balance;
 
     alert("You earned ₹" + userEarn);
-  }, 3000);
+  }, 2000);
 }
 
-// OFFERWALL
-function openOffer() {
-  window.open("https://your-offerwall-link.com");
-}
-
-// WITHDRAW
+// Withdraw
 function withdraw() {
   let upi = document.getElementById("upi").value;
+  let amount = parseFloat(document.getElementById("amount").value);
 
-  if (balance < 50) {
-    alert("Minimum ₹50 required");
+  if (!upi) {
+    alert("Enter UPI ID");
     return;
   }
 
-  if (upi === "") {
-    alert("Enter UPI ID or Paytm number");
+  if (!amount || amount < 10) {
+    alert("Minimum withdraw ₹10");
     return;
   }
 
-  // Save request (temporary)
-  let requests = JSON.parse(localStorage.getItem("withdrawRequests")) || [];
+  if (amount > balance) {
+    alert("Not enough balance");
+    return;
+  }
 
-  requests.push({
-    amount: balance,
-    upi: upi,
-    date: new Date().toLocaleString()
-  });
+  balance -= amount;
 
-  localStorage.setItem("withdrawRequests", JSON.stringify(requests));
+  localStorage.setItem("balance", balance);
+  localStorage.setItem("lastWithdraw", amount);
 
-  alert("Withdrawal request submitted!");
-
-  balance = 0;
   document.getElementById("balance").innerText = balance;
+  document.getElementById("lastWithdraw").innerText = amount;
+
+  alert("Withdrawal request submitted ₹" + amount);
 }
 }
 </script>
