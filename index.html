@@ -60,19 +60,34 @@
 </section>
 
 <section class="tools">
-  <div class="card">
-    <h3>Text Generator</h3>
-    <button onclick="alert('Coming Soon')">Use Tool</button>
-  </div>
-  <div class="card">
-    <h3>Image Prompt Tool</h3>
-    <button onclick="alert('Coming Soon')">Use Tool</button>
-  </div>
+<div class="card">
+  <h3>Text Generator</h3>
+
+  <textarea id="inputText" placeholder="Enter your idea..." style="width:100%;padding:10px;margin-top:10px;"></textarea>
+  <button onclick="generateText()">Generate</button>
+
+  <p id="outputText" style="margin-top:10px;color:#94a3b8;"></p>
+</div>
   <div class="card">
     <h3>Code Helper</h3>
     <button onclick="alert('Coming Soon')">Use Tool</button>
   </div>
 </section>
+ <script>
+async function generateText() {
+  let input = document.getElementById("inputText").value;
+  let output = document.getElementById("outputText");
 
+  output.innerText = "Generating...";
+
+  try {
+    let res = await fetch("https://api.popcat.xyz/chatbot?msg=" + input);
+    let data = await res.json();
+    output.innerText = data.response;
+  } catch (e) {
+    output.innerText = "Error, try again!";
+  }
+}
+ </script>
 </body>
 </html>
