@@ -81,11 +81,11 @@ async function generateText() {
   output.innerText = "Generating...";
 
   try {
-  let res = await fetch("https://api.popcat.xyz/chatbot?msg=" + encodeURIComponent(input));
-  let data = await res.json();
-  output.innerText = data.response;
-} catch (e) {
-  output.innerText = "Error, try again!";
+    let res = await fetch("https://api.simsimi.net/v2/?text=" + encodeURIComponent(input));
+    let data = await res.json();
+    output.innerText = data.success;
+  } catch (e) {
+    output.innerText = "Error, try again!";
   }
 }
 </script>
