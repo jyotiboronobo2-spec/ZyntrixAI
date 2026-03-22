@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ZyntrixAI Earn</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body {
-  font-family: Arial;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: white;
-  text-align: center;
-}
-
-.card {
-  background: #020617;
-  margin: 20px;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-button {
-  padding: 10px 20px;
-  background: #3b82f6;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  margin-top: 10px;
-}
-
-</style>
+  <title>ZyntrixAI Earn</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(135deg,#1e3c72,#2a5298);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .card {
+      background: #00000050;
+      padding: 15px;
+      margin: 15px;
+      border-radius: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin: 10px;
+    }
+  </style>
 </head>
 
 <body>
@@ -36,113 +36,91 @@ button {
 <h1>ZyntrixAI Earn 💸</h1>
 <p>Watch ads & earn money</p>
 
-<div class="card">
-  <h3>💳 Withdraw</h3>
-
-  <input type="text" id="upi" placeholder="Enter UPI ID / Paytm Number"><br><br>
-
-  <button onclick="withdraw()">Withdraw</button>
-</div>
+<h2>Balance: ₹ <span id="balance">0</span></h2>
 
 <div class="card">
-  <h3>🎥 Watch Ad & Earn</h3>
-  <button onclick="watchAd()">Watch Ad</button>
-</div>
-
-<div class="card">
-  <h3>📲 Install App & Earn</h3>
-  <button onclick="openOffer()">Install Now</button>
+  <h3>🎥 Watch Ad</h3>
+  <button onclick="watchAd()">Watch & Earn ₹4</button>
 </div>
 
 <div class="card">
   <h3>💳 Withdraw</h3>
+  <input type="text" id="upi" placeholder="Enter UPI ID">
   <button onclick="withdraw()">Withdraw</button>
 </div>
+
+<!-- 🔥 Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
 
 <script>
-let balance = 0;
-
-// Load data
-window.onload = function () {
-  let savedBalance = localStorage.getItem("balance");
-  let lastWithdraw = localStorage.getItem("lastWithdraw");
-
-  if (savedBalance) balance = parseFloat(savedBalance);
-
-  document.getElementById("balance").innerText = balance;
-  document.getElementById("lastWithdraw").innerText = lastWithdraw || 0;
+const firebaseConfig = {
+  apiKey: "PASTE_YOUR_KEY",
+  authDomain: "PASTE",
+  databaseURL: "PASTE",
+  projectId: "PASTE"
 };
 
-// Watch Ad
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let user = "user1"; // simple user
+
+// Load balance
+db.ref("users/" + user).on("value", snap => {
+  let bal = snap.val()?.balance || 0;
+  document.getElementById("balance").innerText = bal;
+});
+
+// Watch ad (demo)
 function watchAd() {
   alert("Ad playing...");
-
+  
   setTimeout(() => {
-    let total = 10;
-    let userEarn = total * 0.4;
+    db.ref("users/" + user).once("value", snap => {
+      let bal = snap.val()?.balance || 0;
+      bal += 4;
 
-    balance += userEarn;
+      db.ref("users/" + user).set({
+        balance: bal
+      });
+    });
 
-    localStorage.setItem("balance", balance);
-
-    document.getElementById("balance").innerText = balance;
-
-    alert("You earned ₹" + userEarn);
-  }, 2000);
+    alert("₹4 added");
+  }, 3000);
 }
 
 // Withdraw
 function withdraw() {
   let upi = document.getElementById("upi").value;
-  let amount = parseFloat(document.getElementById("amount").value);
 
   if (!upi) {
     alert("Enter UPI ID");
     return;
   }
 
-  if (!amount || amount < 10) {
-    alert("Minimum withdraw ₹10");
-    return;
-  }
+  db.ref("users/" + user).once("value", snap => {
+    let bal = snap.val()?.balance || 0;
 
-  if (amount > balance) {
-    alert("Not enough balance");
-    return;
-  }
+    if (bal < 50) {
+      alert("Minimum ₹50 required");
+      return;
+    }
 
-  balance -= amount;
+    db.ref("withdrawRequests").push({
+      user: user,
+      amount: bal,
+      upi: upi,
+      status: "pending"
+    });
 
-  localStorage.setItem("balance", balance);
-  localStorage.setItem("lastWithdraw", amount);
+    db.ref("users/" + user).set({
+      balance: 0
+    });
 
-  document.getElementById("balance").innerText = balance;
-  document.getElementById("lastWithdraw").innerText = amount;
-
-  alert("Withdrawal request submitted ₹" + amount);
+    alert("Withdrawal requested");
+  });
 }
-}
-</script>
-<!-- 🔥 Firebase Start -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "YAHAN APNA KEY",
-  authDomain: "YAHAN",
-  projectId: "YAHAN",
-  databaseURL: "YAHAN"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-</script>
-<!-- 🔥 Firebase End -->
-<!-- tera pura website code upar hoga -->
-
-<script>
-  // firebase code yaha
 </script>
 
 </body>
