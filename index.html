@@ -81,9 +81,9 @@ async function generateText() {
   output.innerText = "Generating...";
 
   try {
-    let res = await fetch("https://api.popcat.xyz/chatbot?msg=" + input);
-    let data = await res.json();
-    output.innerText = data.response;
+    let res = await fetch("https://api.affiliateplus.xyz/api/chatbot?message=" + input + "&botname=ZyntrixAI&ownername=You");
+let data = await res.json();
+output.innerText = data.message;
   } catch (e) {
     output.innerText = "Error, try again!";
   }
