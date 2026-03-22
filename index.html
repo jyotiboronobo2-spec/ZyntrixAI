@@ -37,7 +37,11 @@ button {
 <p>Watch ads & earn money</p>
 
 <div class="card">
-  <h3>💰 Your Balance: ₹ <span id="balance">0</span></h3>
+  <h3>💳 Withdraw</h3>
+
+  <input type="text" id="upi" placeholder="Enter UPI ID / Paytm Number"><br><br>
+
+  <button onclick="withdraw()">Withdraw</button>
 </div>
 
 <div class="card">
@@ -80,13 +84,34 @@ function openOffer() {
 
 // WITHDRAW
 function withdraw() {
+  let upi = document.getElementById("upi").value;
+
   if (balance < 50) {
     alert("Minimum ₹50 required");
-  } else {
-    alert("Withdrawal requested!");
-    balance = 0;
-    document.getElementById("balance").innerText = balance;
+    return;
   }
+
+  if (upi === "") {
+    alert("Enter UPI ID or Paytm number");
+    return;
+  }
+
+  // Save request (temporary)
+  let requests = JSON.parse(localStorage.getItem("withdrawRequests")) || [];
+
+  requests.push({
+    amount: balance,
+    upi: upi,
+    date: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("withdrawRequests", JSON.stringify(requests));
+
+  alert("Withdrawal request submitted!");
+
+  balance = 0;
+  document.getElementById("balance").innerText = balance;
+}
 }
 </script>
 
